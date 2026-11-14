@@ -27,7 +27,7 @@ const fetchImages = async () => {
         message:
           'Sorry, there are no images matching your search query. Please try again!',
       });
-      return;
+      return false;
     }
 
     createGallery(data.hits);
@@ -41,13 +41,13 @@ const fetchImages = async () => {
       iziToast.info({
         message: "We're sorry, but you've reached the end of search results",
       });
+      return true;
     }
   } catch (error) {
     iziToast.error({ message: error.message });
     return false;
   } finally {
     hideLoader();
-    return true;
   }
 };
 
@@ -80,11 +80,14 @@ loadMoreButton.addEventListener('click', async () => {
 
 function scrollAfterClickLoadMore() {
   const item = document.querySelector('.gallery-item');
+
+  if (!item) {
+    return;
+  }
   const itemHeight = item.getBoundingClientRect().height;
 
   window.scrollBy({
     top: itemHeight * 2,
     behavior: 'smooth',
   });
-  fetchImages();
 }
